@@ -1,0 +1,57 @@
+Agenda "roter Faden"
+
+2 Minuten Vorwort: Was ist Meteor?
+
+Setup
+- Meteor Projekt anlegen
+
+Start Life coding
+- Anlegen HTML-Seite mit nicht viel mehr als das Grundgrüst
+- Anlegen CSS-Datei (nicht weiter darauf eingehen out of scope)
+- Anlegen der JS-Datei
+-- Abschnitt Client und Abschnitt Server
+>> Starten und zeigen der Seite
+
+Anlegen der Quiz-Fragen:
+JS: Anlegen der Collection in JS
+JS: Startup-Section zum Füllen mit einigen Fragen
+JS: Zugriff auf die Collection in JS
+HTML: Anpassen des Template zum Anzeigen der Fragen (nur Text kein Formular)
+>> Zeigen
+
+Quizfragen beantworten:
+JS: Zufällige Frage anzeigen
+HTML: Formular und Ergebnis anzeigen
+JS: Beantworten der Frage
+HTML: Ergebnis anzeigen und Button für nächste Frage
+>> Zeigen
+
+Login einbauen:
+Console: Meteor add password-ui
+Console: Meteor add password-xx?
+HTML: Login Buttons
+JS: Authentification Config
+>> Zeigen
+
+Top Player einbauen:
+JS: Neue Collection für Player
+HTML: Template für das Anzeigen der Spieler mit Ihren Punkten
+>> Zeigen mit Life Update
+>> Zuhörer zum Anmelden motivieren
+
+Aktivitätslog einbauen (Optional):
+JS: Neue Collection für Aktivitätslog
+HTML: Template für das Anzeigen des Aktivitätslog
+>> Zeigen mit Life Update
+
+Inhalte die wir daran zeigen können:
+- Meteor Handling auf der Komandozeile
+- Life Data
+- Module/Erweiterungen Bsp: Login-Modul
+- Pure JS
+- Templating
+- Collections und DB Integration
+
+Weitere Ideen für den Inhalte:
+- Pflegen der Quizfragen aufnehmen (CRUD)
+
