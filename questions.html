@@ -1,0 +1,36 @@
+<template name="questions">
+  <div class="questions box">
+    <p class="bold">Questions</p>
+    {{#if selected_name}}
+      {{#if selected_question}}
+        {{#if selected_answer}}
+	        {{#if chosenAnswer "correct"}}
+		        <div class="green bold">Good, your answer was correct.</div>
+	        {{else}}
+            <div class="red bold">Sorry, your answer was not correct.</div>
+	        {{/if}}
+          <input type="button" value="Next Question"
+            class="btn btn-small nextQuestion"><br>
+        {{else}}
+            {{> question}}
+        {{/if}}
+      {{else}}
+        <input type="button" value="Next Question"
+          class="btn btn-small nextQuestion"><br>
+      {{/if}}
+    {{else}}
+        <div class="red bold">Please login to play!</div>
+    {{/if}}
+  </div>
+</template>
+
+<template name="question">
+  <div class="question">
+    <span>Question {{questionselected.id}}: </span>
+    <span>{{questionselected.question}}</span><br>
+    <div>A: <input type="button" value="{{questionselected.answers.[0]}}" class="answer 1 {{chosenAnswer '0'}}"></div>
+    <div>B: <input type="button" value="{{questionselected.answers.[1]}}" class="answer 2 {{chosenAnswer '1'}}"></div>
+    <div>C: <input type="button" value="{{questionselected.answers.[2]}}" class="answer 3 {{chosenAnswer '2'}}"></div>
+    <div>D: <input type="button" value="{{questionselected.answers.[3]}}" class="answer 4 {{chosenAnswer '3'}}"></div>
+  </div>
+</template>
