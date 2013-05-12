@@ -44,24 +44,20 @@ if (Meteor.isClient) {
     });
 
 
-    Template.leaderboard.players = function () {
+    Template.ranking.players = function () {
         return Players.find({}, {limit: 10,sort: {score: -1, name: 1}});
     };
 
-    Template.leaderboard.logs = function () {
+    Template.activities.logs = function () {
         return Logs.find({}, { limit: 10, sort: {zeitpunkt: -1}});
     };
-
-    // Template.leaderboard.logs = function () {
-    //   return Logs.find({}, { limit:5, sort: {zeitpunkt: -1}, skip: rp });
-    // };
 
     Template.question.col = function () {
         return Col.find({},{});
     };
 
 
-    Template.leaderboard.questions = function () {
+    Template.questions.questions = function () {
         var count = Questions.find({}, {}).count();
         var rp = Math.floor(Math.random() * count);
         console.log("rp: " + rp + " count:" + count);
@@ -70,7 +66,6 @@ if (Meteor.isClient) {
         var pn = Array();
 
         for (var propName in q) {
-
             console.log("Iterating through prop with name>", propName, "< its value is ", q[propName]);
         }
 
@@ -80,7 +75,6 @@ if (Meteor.isClient) {
         }
 
         for (var propName in pn) {
-
             console.log("Iterating through prop with name>", propName, "< its value is ", pn[propName]);
             console.log("Iterating through prop with name>", propName, "< its value is ", q[ pn[propName] ]);
         }
@@ -114,11 +108,11 @@ if (Meteor.isClient) {
         return q;
     };
 
-    Template.leaderboard.events({
+    Template.questions.events({
         'click .answer': function (a) {
 
             var correct = Session.get("correct_answer");
-            var points = -1;
+            var points = -5;
             var message = " was wrong."
 
             if (a.target.defaultValue === correct) {
@@ -126,7 +120,7 @@ if (Meteor.isClient) {
                 message = " answered right."
             }
 
-            message = message + " (Points: "+points+")";
+            //message = message + " (Points: "+points+")";
             Players.update(Session.get("selected_player"), {$inc: {score: points}});
 
             Template.leaderboard.writeLog( username, points, message );
@@ -136,18 +130,19 @@ if (Meteor.isClient) {
             return false;
         }
     });
-    Template.leaderboard.events({
+    
+    Template.questions.events({
         'click .nextQuestion': function (a) {
-
             Session.set("correct_answer", "x");
             Session.set("selected_answer", "y");
             Session.set("question", "");
             Session.set("selected_question", null);
-            Template.leaderboard.questions();
+            Template.questions.questions();
             return false;
         }
     });
-    Template.leaderboard.chosenAnswer = function () {
+    
+    Template.questions.chosenAnswer = function () {
         //alert( "Answer what"+what );
 
         /*	var myRsvp = _.find(this.rsvps, function (r) {
@@ -155,10 +150,9 @@ if (Meteor.isClient) {
          }) || {};
          */
         return Session.get("selected_answer") == Session.get("correct_answer");
-
     };
 
-    Template.leaderboard.mix2 = function (a) {
+    Template.questions.mix2 = function (a) {
         if (a) {
             console.log("mix q" + q);
             var temp = q[0];
@@ -187,7 +181,7 @@ if (Meteor.isClient) {
         passwordSignupFields: 'USERNAME_AND_OPTIONAL_EMAIL'
     });
 
-    Template.leaderboard.selected_name = function () {
+    Template.questions.selected_name = function () {
         var player = Players.findOne(Session.get("selected_player"));
         return player && player.name;
     };
@@ -196,11 +190,11 @@ if (Meteor.isClient) {
         return Session.equals("selected_player", this._id) ? "selected" : '';
     };
 
-    Template.leaderboard.selected_question = function () {
+    Template.questions.selected_question = function () {
         return Session.get("selected_question");
     };
 
-    Template.leaderboard.correct_answer = function () {
+    Template.questions.correct_answer = function () {
         return Session.get("correct_answer");
     };
 
@@ -208,7 +202,7 @@ if (Meteor.isClient) {
         return Session.get("selected_question");
     };
 
-    Template.leaderboard.selected_answer = function () {
+    Template.questions.selected_answer = function () {
         return Session.get("selected_answer");
     };
 
