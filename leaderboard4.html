@@ -1,90 +1,17 @@
 <head>
-  <title>Leaderboard</title>
+  <title>QuizPoker</title>
 </head>
 
 <body>
-  <div id="outer">
+  <div class="main">
     {{> leaderboard}}
   </div>
 </body>
 
 <template name="leaderboard">
-  <p>Logged in as: {{loginButtons}}</p>
-  
-  <div class="column">
-    <div class="leaderboard">
-      <div class="player {{selected}}">
-        <span class="name">Top Players:</span>
-        <span class="score">Score:</span>
-      </div>
-      {{#each players}}
-        {{> player}}
-      {{/each}}
-    </div>
-  </div>
-
-  <div class="columnleft">
-    <div class="leaderboard">
-      Latest activities of all players:<br/>
-      {{#each logs}}
-        {{> log}}
-      {{/each}}
-    </div>
-  </div>
-
-  {{#if selected_name}}
-    {{#if selected_question}}
-      {{#if selected_answer}}
-	      {{#if chosenAnswer "correct"}}
-		      Good, your answer was correct.
-	      {{else}}
-          Sorry, your answer was not correct.
-	      {{/if}}
-        <input type="button" value="Next Question"
-          class="btn btn-small nextQuestion"><br>
-
-      {{else}}
-        <div class="question">
-          {{> question}}
-        </div>
-
-      {{/if}}
-    {{else}}
-      <input type="button" value="Next Question"
-        class="btn btn-small nextQuestion"><br>
-    {{/if}}
-  {{/if}}
+  <h1>QuizPoker</h1>
+  {{> ranking}}
+  {{> user}}
+  {{> questions}}
+  {{> activities}}
 </template>
-
-<template name="player">
-  <div class="player {{selected}}">
-    <span class="name">{{name}}</span>
-    <span class="score">{{score}}</span>
-  </div>
-</template>
-
-<template name="log">
-  <div class="log">
-    <span class="name">{{name}}</span>
-    <!-- <span class="score">{{score}}</span> -->
-    <span class="score">{{message}}</span>
-    <!-- <span class="name">{{zeitpunkt}}</span> -->
-  </div>
-</template>
-
-<template name="question">
-  <div class="question">
-    <span class="name">Frage {{questionselected.id}}: </span>
-    <span class="name">{{questionselected.question}}</span><br>
-    
-    A: <input type="button" value="{{questionselected.answers.[0]}}" 
-        class="btn btn-small answer 1 {{chosenAnswer '0'}}"><br>
-    B: <input type="button" value="{{questionselected.answers.[1]}}"
-        class="btn btn-small answer 2 {{chosenAnswer '1'}}"><br>
-    C: <input type="button" value="{{questionselected.answers.[2]}}"
-        class="btn btn-small answer 3 {{chosenAnswer '2'}}"><br>
-    D: <input type="button" value="{{questionselected.answers.[3]}}"
-        class="btn btn-small answer 4 {{chosenAnswer '3'}}"><br>
-  </div>
-</template>
-

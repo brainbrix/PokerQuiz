@@ -1,0 +1,23 @@
+<template name="activities">
+  <div class="activities box">
+    <p class="bold">Latest activities of all players:</p>
+    <div>
+      <span class="tab_200 bold">Time</span>
+      <span class="tab_100 bold">Name</span>
+      <span class="tab_200 bold">Info</span>
+      <span class="tab_50 bold">Score</span>
+    <div>
+    {{#each logs}}
+      {{> log}}
+    {{/each}}
+  </div>
+</template>
+
+<template name="log">
+  <div>
+    <span class="tab_200">{{zeitpunkt}}</span>
+    <span class="tab_100">{{name}}</span>
+    <span class="tab_200">{{message}}</span>
+    <span class="tab_50 number">{{score}}</span>
+  <div>
+</template>
