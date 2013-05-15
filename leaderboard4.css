@@ -87,3 +87,13 @@ input[type="button"] {
   color: green;
 }
 
+.answer {
+    cursor: pointer;
+    padding: 5px;
+    color: #fa9900;
+}
+
+.answer:hover
+{
+    background-color:yellow;
+}
