@@ -1,6 +1,7 @@
 // Set up a collection to contain player information. On the server,
 // it is backed by a MongoDB collection named "players".
 
+
 getCurrentDateString = function () {
     da = new Date();	// Create a Date Object set to the last modifed date
     db = da.toGMTString();	// Convert to a String in "predictable formt"
@@ -14,12 +15,12 @@ Players = new Meteor.Collection("players");
 Logs = new Meteor.Collection("logs");
 Questions = new Meteor.Collection("questions");
 
-Col = new Meteor.Collection(null);
+// Collection is not db mapped
+Answers = new Meteor.Collection(null);
 
 if (Meteor.isClient) {
 
-    Template.leaderboard.writeLog = function ( thename, thescore, themessage )
-    {
+    Template.leaderboard.writeLog = function (thename, thescore, themessage) {
         var d = new Date();
         Logs.insert({zeitpunkt: getCurrentDateString() + " " + d.toLocaleTimeString(), name: thename, score: thescore, message: themessage});
     }
@@ -38,22 +39,21 @@ if (Meteor.isClient) {
             Session.set("selected_player", dbuser._id);
 
         } else {
-            //          username = "HSP";
             Session.set("selected_player", null);
         }
     });
 
 
     Template.ranking.players = function () {
-        return Players.find({}, {limit: 10,sort: {score: -1, name: 1}});
+        return Players.find({}, {limit: 10, sort: {score: -1, name: 1}});
     };
 
     Template.activities.logs = function () {
         return Logs.find({}, { limit: 10, sort: {zeitpunkt: -1}});
     };
 
-    Template.question.col = function () {
-        return Col.find({},{});
+    Template.question.answers = function () {
+        return Answers.find({}, {});
     };
 
 
@@ -61,49 +61,49 @@ if (Meteor.isClient) {
         var count = Questions.find({}, {}).count();
         var rp = Math.floor(Math.random() * count);
         console.log("rp: " + rp + " count:" + count);
-        var q = Questions.findOne({}, { limit: 1, sort: {id: -1}, skip: rp });
+        var selectedQuestion = Questions.findOne({}, { limit: 1, sort: {id: -1}, skip: rp });
 
         var pn = Array();
 
-        for (var propName in q) {
-            console.log("Iterating through prop with name>", propName, "< its value is ", q[propName]);
+        for (var propName in selectedQuestion) {
+            console.log("Iterating through prop with name>", propName, "< its value is ", selectedQuestion[propName]);
         }
 
-        for (var propName in q) {
+        for (var propName in selectedQuestion) {
             pn.push(propName);
-            console.log("Iterating through prop with name>", propName, "< its value is ", q[propName]);
+            console.log("Iterating through prop with name>", propName, "< its value is ", selectedQuestion[propName]);
         }
 
         for (var propName in pn) {
             console.log("Iterating through prop with name>", propName, "< its value is ", pn[propName]);
-            console.log("Iterating through prop with name>", propName, "< its value is ", q[ pn[propName] ]);
+            console.log("Iterating through prop with name>", propName, "< its value is ", selectedQuestion[ pn[propName] ]);
         }
 
-        var a = q[ 'answers' ];
-        if (a) {
-            console.log("mix q" + q);
-            var temp = a[0];
+        var theAnswers = selectedQuestion[ 'answers' ];
+        if (selectedQuestion) {
+
+            var temp = theAnswers[0];
             var randfn = function (left, right) {
                 return Math.floor(Math.random() * 3) - 1;
             };
-            a.sort(randfn);
-            a.sort(randfn);
-            a.sort(randfn);
-            a.sort(randfn);
+            theAnswers.sort(randfn);
+            theAnswers.sort(randfn);
+            theAnswers.sort(randfn);
+            theAnswers.sort(randfn);
 
-            q[ 'answers' ] = a;
+            selectedQuestion[ 'answers' ] = theAnswers;
         }
-        Session.set("selected_question", q);
+        Session.set("selected_question", selectedQuestion);
         Session.set("correct_answer", temp);
         Session.set("selected_answer", "");
 
-        //var col = new Meteor.Collection("null");
+        Answers.remove({});
 
-        Col.remove({});
-        Col.insert( {text: a[0] } );
-        Col.insert( {text: a[1] } );
-        Col.insert( {text: a[2] } );
-        Col.insert( {text: a[3] } );
+        for (var i = 0; i < theAnswers.length; i++) {
+            Answers.insert({label: String.fromCharCode(65 + i), text: theAnswers[i] });
+            // Similar to 4 lines like:
+            // Answers.insert( {label:'A', text: theAnswers[0] } );
+        }
 
         return q;
     };
@@ -123,14 +123,38 @@ if (Meteor.isClient) {
             //message = message + " (Points: "+points+")";
             Players.update(Session.get("selected_player"), {$inc: {score: points}});
 
-            Template.leaderboard.writeLog( username, points, message );
+            Template.leaderboard.writeLog(username, points, message);
 
             Session.set("selected_answer", a.target.defaultValue)
 
             return false;
         }
     });
-    
+
+    Template.answer.events({
+
+        'click': function (a) {
+            console.info(this);
+            var correct = Session.get("correct_answer");
+            var points = -1;
+            var message = " was wrong."
+
+            if (this.text === correct) {
+                points = 10;
+                message = " answered right."
+            }
+
+            message = message + " (Points: " + points + ")";
+            Players.update(Session.get("selected_player"), {$inc: {score: points}});
+
+            Template.leaderboard.writeLog(username, points, message);
+
+            Session.set("selected_answer", this.text)
+
+            return false;
+        }
+    });
+
     Template.questions.events({
         'click .nextQuestion': function (a) {
             Session.set("correct_answer", "x");
@@ -141,7 +165,7 @@ if (Meteor.isClient) {
             return false;
         }
     });
-    
+
     Template.questions.chosenAnswer = function () {
         //alert( "Answer what"+what );
 
@@ -212,20 +236,31 @@ if (Meteor.isClient) {
 //        }
     });
 }
-
-// On server startup, create some players if the database is empty.
+/**
+ *  On server startup, create some players if the database is empty.
+ */
 if (Meteor.isServer) {
     Meteor.startup(function () {
+
+        // add some demo players
         if (Players.find().count() === 0) {
             var names = ["Ada Lovelace",
-                "Claude Shannon",
-                "HSP"];
-            for (var i = 0; i < names.length; i++)
+                "Claude Shannon" ];
+            for (var i = 0; i < names.length; i++) {
                 Players.insert({name: names[i], score: Math.floor(Math.random() * 10) * 5});
+            }
+        }
 
+        if (Questions.find().count() === 0) {
+            // Just to have some questions at hand
             Questions.insert({id: 1, question: "Wie viele Kinobesucher gab es im Jahr 2012 in Deutschland?", answers: ["12 Mio", "1 Mio", "34 Mio", "6,54 Mio" ]});
             Questions.insert({id: 2, question: "Wie viele Einwohner hat Deutschland?", answers: ["81 Mio", "63  Mio", "112 Mio", "44,5 Mio" ]});
             Questions.insert({id: 3, question: "Wie viele Einwohner hat Europa ca.?", answers: ["700 Mio", "1050 Mio", "112 Mio", "300 Mio" ]});
+
+            // File questions_json.js is auto paced and loaded
+            for (var i = 0; i < jsonData.length; i++) {
+                Questions.insert({question: jsonData[i].question, answers: jsonData[i].answers });
+            }
         }
     });
 }
