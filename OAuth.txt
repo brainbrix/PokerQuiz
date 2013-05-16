@@ -1,0 +1,8 @@
+GitHub
+Client ID:      19a07f2eafcba4e5969f
+Client Secret:  abcf34655a73bf3f888897f04d4fad5362c783ae
+
+Google
+Client ID:      810872013315.apps.googleusercontent.com
+Client Secret:  uoMPG97d4MPWEjw8nLzT2cM1
+

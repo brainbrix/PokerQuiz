@@ -25,21 +25,33 @@ if (Meteor.isClient) {
         Logs.insert({zeitpunkt: getCurrentDateString() + " " + d.toLocaleTimeString(), name: thename, score: thescore, message: themessage});
     }
 
+    Accounts.ui.config({
+        requestPermissions: {
+            github: ['user', 'repo']
+        },
+        passwordSignupFields: 'USERNAME_AND_OPTIONAL_EMAIL'
+    });
+
     Meteor.autorun(function () {
         if (Meteor.user()) {
 
-            username = Meteor.user().username;
-            //Session.set("selected_player", Meteor.user().username );
+            var user = Meteor.user();
+            if (user.profile) {
+                username = user.profile.name;
+            } else {
+                username = user.username;
+            }
+            
             var dbuser = Players.findOne({name: username});
             if (!dbuser) {
                 Players.insert({name: username, score: 10});
+                dbuser = Players.findOne({name: username});
+                Template.leaderboard.writeLog(dbuser.name, dbuser.score, "has registered");
             }
-
-            dbuser = Players.findOne({name: username});
-            Session.set("selected_player", dbuser._id);
+            userId = dbuser._id;
 
         } else {
-            Session.set("selected_player", null);
+            userId = null;
         }
     });
 
@@ -108,29 +120,6 @@ if (Meteor.isClient) {
         return q;
     };
 
-    Template.questions.events({
-        'click .answer': function (a) {
-
-            var correct = Session.get("correct_answer");
-            var points = -5;
-            var message = " was wrong."
-
-            if (a.target.defaultValue === correct) {
-                points = 10;
-                message = " answered right."
-            }
-
-            //message = message + " (Points: "+points+")";
-            Players.update(Session.get("selected_player"), {$inc: {score: points}});
-
-            Template.leaderboard.writeLog(username, points, message);
-
-            Session.set("selected_answer", a.target.defaultValue)
-
-            return false;
-        }
-    });
-
     Template.answer.events({
 
         'click': function (a) {
@@ -144,9 +133,7 @@ if (Meteor.isClient) {
                 message = " answered right."
             }
 
-            //message = message + " (Points: " + points + ")";
-            Players.update(Session.get("selected_player"), {$inc: {score: points}});
-
+            Players.update(userId, {$inc: {score: points}});
             Template.leaderboard.writeLog(username, points, message);
 
             Session.set("selected_answer", this.text)
@@ -192,26 +179,10 @@ if (Meteor.isClient) {
 
             console.log("correct:" + q.indexOf(temp));
         }
-    }
-
-    Accounts.ui.config({
-        requestPermissions: {
-            facebook: ['user_likes'],
-            github: ['user', 'repo']
-        },
-        requestOfflineToken: {
-            google: true
-        },
-        passwordSignupFields: 'USERNAME_AND_OPTIONAL_EMAIL'
-    });
-
-    Template.questions.selected_name = function () {
-        var player = Players.findOne(Session.get("selected_player"));
-        return player && player.name;
     };
 
     Template.player.selected = function () {
-        return Session.equals("selected_player", this._id) ? "warning" : "";
+        return userId == this._id ? "warning" : "";
     };
     
     Template.logentry.isError = function() {
@@ -234,36 +205,25 @@ if (Meteor.isClient) {
         return Session.get("selected_answer");
     };
 
-    Template.player.events({
-//        'click': function () {
-//            Session.set("selected_player", this._id);
-//        }
-    });
 }
 /**
- *  On server startup, create some players if the database is empty.
+ *  On server startup, create some players and questions if the database is empty.
  */
 if (Meteor.isServer) {
     Meteor.startup(function () {
 
         // add some demo players
         if (Players.find().count() === 0) {
-            var names = ["Ada Lovelace",
-                "Claude Shannon" ];
+            var names = ["John Doe", "Ada Lovelace", "Claude Shannon" ];
             for (var i = 0; i < names.length; i++) {
                 Players.insert({name: names[i], score: Math.floor(Math.random() * 10) * 5});
             }
         }
 
         if (Questions.find().count() === 0) {
-            // Just to have some questions at hand
-            Questions.insert({id: 1, question: "Wie viele Kinobesucher gab es im Jahr 2012 in Deutschland?", answers: ["12 Mio", "1 Mio", "34 Mio", "6,54 Mio" ]});
-            Questions.insert({id: 2, question: "Wie viele Einwohner hat Deutschland?", answers: ["81 Mio", "63  Mio", "112 Mio", "44,5 Mio" ]});
-            Questions.insert({id: 3, question: "Wie viele Einwohner hat Europa ca.?", answers: ["700 Mio", "1050 Mio", "112 Mio", "300 Mio" ]});
-
-            // File questions_json.js is auto paced and loaded
-            for (var i = 0; i < jsonData.length; i++) {
-                Questions.insert({question: jsonData[i].question, answers: jsonData[i].answers });
+            // File questions_json.js is auto parsed and loaded
+            for (var i = 0; i < questionsJson.length; i++) {
+                Questions.insert({id: questionsJson[i].id, question: questionsJson[i].question, answers: questionsJson[i].answers });
             }
         }
     });

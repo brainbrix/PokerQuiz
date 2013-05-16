@@ -7,15 +7,16 @@
 </body>
 
 <template name="leaderboard">
-    <div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span8">
-                <h3 class="well">QuizPoker</h3>
-            </div>
-            <div class="span4">
-                {{> user}}
-            </div>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <a class="brand">QuizPoker</a>
+            <ul class="nav pull-right">
+                <li><a>{{loginButtons align="right"}}</a></li>
+            </ul>
         </div>
+    </div>
+    <div class="container-fluid">
+        {{#if currentUser}}
         <div class="row-fluid">
             <div class="span4">
                 {{> ranking}}
@@ -29,5 +30,11 @@
                 {{> activities}}
             </div>
         </div>
+        {{else}}
+        <div class="container"><div class="hero-unit">
+            <h1>Welcome to QuizPoker</h1>
+            <p>Please login in order to get in the play!</p>
+        </div></div>
+        {{/if}}
     </div>
 </template>
