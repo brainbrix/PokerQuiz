@@ -1,26 +1,20 @@
 <template name="questions">
-  <div class="well">
-    <h4>Questions</h4>
-      {{#if selected_name}}
+    <div class="well">
+        <h4>Questions</h4>
         {{#if selected_question}}
-          {{#if selected_answer}}
-            {{#if chosenAnswer "correct"}}
-              <div class="text-success"><strong>Good, your answer was correct.</strong></div>
+            {{#if selected_answer}}
+                {{#if chosenAnswer "correct"}}
+                    <div class="text-success"><strong>Good, your answer was correct.</strong></div>
+                {{else}}
+                    <div class="text-error"><strong>Sorry, your answer was not correct.</strong></div>
+                {{/if}}
+                <input type="button" value="Next Question" class="btn btn-primary nextQuestion"><br>
             {{else}}
-              <div class="text-error"><strong>Sorry, your answer was not correct.</strong></div>
+                {{> question}}
             {{/if}}
-              <input type="button" value="Next Question"
-               class="btn btn-info nextQuestion"><br>
-          {{else}}
-            {{> question}}
-          {{/if}}
         {{else}}
-          <input type="button" value="Next Question"
-            class="btn btn-info nextQuestion"><br>
+            <input type="button" value="Select Question" class="btn btn-primary nextQuestion"><br>
         {{/if}}
-      {{else}}
-        <span class="label label-important">Please login to play!</span>
-      {{/if}}
     </div>
 </template>
 
