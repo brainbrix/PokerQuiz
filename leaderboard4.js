@@ -136,7 +136,7 @@ if (Meteor.isClient) {
         'click': function (a) {
             console.info(this);
             var correct = Session.get("correct_answer");
-            var points = -1;
+            var points = -5;
             var message = " was wrong."
 
             if (this.text === correct) {
@@ -144,7 +144,7 @@ if (Meteor.isClient) {
                 message = " answered right."
             }
 
-            message = message + " (Points: " + points + ")";
+            //message = message + " (Points: " + points + ")";
             Players.update(Session.get("selected_player"), {$inc: {score: points}});
 
             Template.leaderboard.writeLog(username, points, message);
@@ -211,7 +211,11 @@ if (Meteor.isClient) {
     };
 
     Template.player.selected = function () {
-        return Session.equals("selected_player", this._id) ? "selected" : '';
+        return Session.equals("selected_player", this._id) ? "warning" : "";
+    };
+    
+    Template.logentry.isError = function() {
+        return (this.score > 0) ? "success" : "error";
     };
 
     Template.questions.selected_question = function () {

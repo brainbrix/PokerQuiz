@@ -1,19 +1,25 @@
 <template name="ranking">
-  <div class="ranking box">
-    <p class="bold">Ranking</p>
-    <div class="player {{selected}}">
-      <span class="tab_200 bold">Top Players:</span>
-      <span class="tab_50 bold">Score:</span>
-    </div>
-    {{#each players}}
-      {{> player}}
-    {{/each}}
+    <div class="well">
+        <h4>Ranking</h4>
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Top Players:</th>
+                        <th>Score:</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each players}}
+                      {{> player}}
+                    {{/each}}
+                </tbody>
+        </table>
   </div>
 </template>
 
 <template name="player">
-  <div class="player {{selected}}">
-    <span class="tab_200">{{name}}</span>
-    <span class="tab_50 number">{{score}}</span>
-  </div>
+  <tr class="{{selected}}">
+    <td>{{name}}</td>
+    <td class="text-right">{{score}}</td>
+  </tr>
 </template>

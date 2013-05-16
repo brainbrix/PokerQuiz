@@ -1,17 +1,33 @@
 <head>
-  <title>QuizPoker</title>
+    <title>QuizPoker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
 <body>
-  <div class="main">
     {{> leaderboard}}
-  </div>
 </body>
 
 <template name="leaderboard">
-  <h1>QuizPoker</h1>
-  {{> ranking}}
-  {{> user}}
-  {{> questions}}
-  {{> activities}}
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span8">
+                <h3 class="well">QuizPoker</h3>
+            </div>
+            <div class="span4">
+                {{> user}}
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4">
+                {{> ranking}}
+            </div>
+            <div class="span8">
+                {{> questions}}
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                {{> activities}}
+            </div>
+        </div>
+    </div>
 </template>

@@ -1,47 +1,45 @@
 <template name="questions">
-  <div class="questions box">
-    <p class="bold">Questions</p>
+  <div class="well">
+    <h4>Questions</h4>
       {{#if selected_name}}
         {{#if selected_question}}
           {{#if selected_answer}}
             {{#if chosenAnswer "correct"}}
-              <div class="green bold">Good, your answer was correct.</div>
+              <div class="text-success"><strong>Good, your answer was correct.</strong></div>
             {{else}}
-              <div class="red bold">Sorry, your answer was not correct.</div>
+              <div class="text-error"><strong>Sorry, your answer was not correct.</strong></div>
             {{/if}}
               <input type="button" value="Next Question"
-               class="btn btn-small nextQuestion"><br>
+               class="btn btn-info nextQuestion"><br>
           {{else}}
             {{> question}}
           {{/if}}
         {{else}}
           <input type="button" value="Next Question"
-            class="btn btn-small nextQuestion"><br>
+            class="btn btn-info nextQuestion"><br>
         {{/if}}
       {{else}}
-        <div class="red bold">Please login to play!</div>
+        <span class="label label-important">Please login to play!</span>
       {{/if}}
     </div>
 </template>
 
 <template name="question">
-    <div class="question">
-        <span>Question {{questionselected.id}}: </span>
-        <span>{{questionselected.question}}</span><br>
+    <strong><em>
+        Question {{questionselected.id}}: {{questionselected.question}}<br>
         <!-- <div>A: <input type="button" value="{{questionselected.answers.[0]}}" class="answer 1 {{chosenAnswer '0'}}"></div>
            <div>B: <input type="button" value="{{questionselected.answers.[1]}}" class="answer 2 {{chosenAnswer '1'}}"></div>
            <div>C: <input type="button" value="{{questionselected.answers.[2]}}" class="answer 3 {{chosenAnswer '2'}}"></div>
            <div>D: <input type="button" value="{{questionselected.answers.[3]}}" class="answer 4 {{chosenAnswer '3'}}"></div>-->
         {{#each answers}}
-        {{> answer}}
+            {{> answer}}
         {{/each}}
-    </div>
+    </em></strong>
 </template>
 
 <template name="answer">
-    <div class="answer {{selected}}">
-        <span class="name">{{label}}:&nbsp;</span>
-        <span class="name">{{text}}</span>
-        <!--  <input type="button" value="{{text}}" class="btn btn-small answer" /> -->
+    <div class="text-info answer">
+        {{label}}:&nbsp;{{text}}
+        <!--  <input type="button" value="{{text}}" class="btn answer" /> -->
     </div>
 </template>
