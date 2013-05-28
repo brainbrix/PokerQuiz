@@ -65,12 +65,6 @@ Template.questions.questions = function () {
     }
 };
 
-Meteor.methods({
-    getRandomQuestion: function() {
-        return true;
-    }
-});
-
 Template.questions.chosenAnswer = function () {
     return Session.get("selected_answer") == Session.get("correct_answer");
 };
