@@ -20,11 +20,11 @@ Meteor.startup(function () {
 });
 
 Meteor.publish("logs", function() {
-	return Logs.find({}, { limit: 10, fields: {_id: 0}});
+	return Logs.find({}, {limit: 10, sort: {timestamp: -1}});
 });
 
 Meteor.publish("players", function() {
-	return Players.find({}, {limit: 10, fields: {_id: 0}});
+	return Players.find({}, {limit: 10, sort: {score: -1, name: 1}});
 });
 
 Meteor.publish("questions", function() {
