@@ -36,5 +36,9 @@ Meteor.methods({
         var q = Questions.find().fetch();
         q = _.shuffle(q);
         return q[0];
+    },
+    writeLog: function(theName, theScore, theMessage) {
+        var dateTimeString = moment().format("YYYY-MM-DD HH:mm:ss");
+        Logs.insert({timestamp: dateTimeString, name: theName, score: theScore, message: theMessage});
     }
 });

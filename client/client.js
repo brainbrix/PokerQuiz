@@ -1,8 +1,3 @@
-writeLog = function (thename, thescore, themessage) {
-    var dateTimeString = moment().format("YYYY-MM-DD HH:mm:ss");
-    Logs.insert({timestamp: dateTimeString, name: thename, score: thescore, message: themessage});
-}
-
 Accounts.ui.config({
     requestPermissions: {
         github: ['user', 'repo']
@@ -23,7 +18,7 @@ Deps.autorun(function () {
         if (!dbuser) {
             Players.insert({name: username, score: 10});
             dbuser = Players.findOne({name: username});
-            writeLog(dbuser.name, dbuser.score, "has registered");
+            Meteor.call("writeLog", dbuser.name, dbuser.score, "has registered");
         }
         userId = dbuser._id;
 
@@ -49,9 +44,9 @@ Template.questions.events({
 });
 
 Template.questions.questions = function () {
+    //var selectedQuestion = Meteor.call("getRandomQuestion");
     var count = Questions.find({}, {}).count();
     var rp = Math.floor(Math.random() * count);
-    console.log("rp: " + rp + " count:" + count);
     var selectedQuestion = Questions.findOne({}, { limit: 1, sort: {id: -1}, skip: rp });
 
     var theAnswers = selectedQuestion["answers"];
@@ -69,6 +64,12 @@ Template.questions.questions = function () {
         Answers.insert({label: String.fromCharCode(65 + i), text: theAnswers[i] });
     }
 };
+
+Meteor.methods({
+    getRandomQuestion: function() {
+        return true;
+    }
+});
 
 Template.questions.chosenAnswer = function () {
     return Session.get("selected_answer") == Session.get("correct_answer");
@@ -95,7 +96,7 @@ Template.question.answers = function () {
 };
 
 Template.answer.events({
-    'click .answer': function (a) {
+    'click .answer': function () {
         console.info(this);
         var correct = Session.get("correct_answer");
         var points = -5;
@@ -107,7 +108,7 @@ Template.answer.events({
         }
 
         Players.update(userId, {$inc: {score: points}});
-        writeLog(username, points, message);
+        Meteor.call("writeLog", username, points, message);
 
         Session.set("selected_answer", this.text)
 
