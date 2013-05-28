@@ -28,7 +28,6 @@ Deps.autorun(function () {
 	
 	Meteor.subscribe("players");
 	Meteor.subscribe("logs");
-	Meteor.subscribe("questions");
 });
 
 
@@ -36,7 +35,6 @@ Template.questions.events({
     'click .nextQuestion': function (a) {
         Session.set("correct_answer", "x");
         Session.set("selected_answer", "y");
-        Session.set("question", "");
         Session.set("selected_question", null);
         Template.questions.questions();
         return false;
@@ -44,26 +42,26 @@ Template.questions.events({
 });
 
 Template.questions.questions = function () {
-    //var selectedQuestion = Meteor.call("getRandomQuestion");
-    var count = Questions.find({}, {}).count();
-    var rp = Math.floor(Math.random() * count);
-    var selectedQuestion = Questions.findOne({}, { limit: 1, sort: {id: -1}, skip: rp });
+    Meteor.call("getRandomQuestion", _onQuestionReceive);
+};
 
-    var theAnswers = selectedQuestion["answers"];
-    if (selectedQuestion) {
-        var temp = theAnswers[0];
+_onQuestionReceive = function(error, question) {
+    console.log("got question: " + question.id);
+    if (question) {
+        var theAnswers = question["answers"];
+        var correct = theAnswers[0];
         theAnswers = _.shuffle(theAnswers);
-        selectedQuestion["answers"] = theAnswers;
+        question["answers"] = theAnswers;
     }
-    Session.set("selected_question", selectedQuestion);
-    Session.set("correct_answer", temp);
+    Session.set("selected_question", question);
+    Session.set("correct_answer", correct);
     Session.set("selected_answer", "");
 
     Answers.remove({});
     for (var i = 0; i < theAnswers.length; i++) {
         Answers.insert({label: String.fromCharCode(65 + i), text: theAnswers[i] });
     }
-};
+}
 
 Template.questions.chosenAnswer = function () {
     return Session.get("selected_answer") == Session.get("correct_answer");
