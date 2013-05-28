@@ -36,14 +36,10 @@ Template.questions.events({
         Session.set("correct_answer", "x");
         Session.set("selected_answer", "y");
         Session.set("selected_question", null);
-        Template.questions.questions();
+        Meteor.call("getRandomQuestion", _onQuestionReceive);
         return false;
     }
 });
-
-Template.questions.questions = function () {
-    Meteor.call("getRandomQuestion", _onQuestionReceive);
-};
 
 _onQuestionReceive = function(error, question) {
     console.log("got question: " + question.id);
