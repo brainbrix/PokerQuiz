@@ -21,10 +21,6 @@
 <template name="question">
     <strong><em>
         Question {{questionselected.id}}: {{questionselected.question}}<br>
-        <!-- <div>A: <input type="button" value="{{questionselected.answers.[0]}}" class="answer 1 {{chosenAnswer '0'}}"></div>
-           <div>B: <input type="button" value="{{questionselected.answers.[1]}}" class="answer 2 {{chosenAnswer '1'}}"></div>
-           <div>C: <input type="button" value="{{questionselected.answers.[2]}}" class="answer 3 {{chosenAnswer '2'}}"></div>
-           <div>D: <input type="button" value="{{questionselected.answers.[3]}}" class="answer 4 {{chosenAnswer '3'}}"></div>-->
         {{#each answers}}
             {{> answer}}
         {{/each}}
@@ -34,6 +30,5 @@
 <template name="answer">
     <div class="text-info answer">
         {{label}}:&nbsp;{{text}}
-        <!--  <input type="button" value="{{text}}" class="btn answer" /> -->
     </div>
 </template>
