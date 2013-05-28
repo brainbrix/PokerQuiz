@@ -30,3 +30,11 @@ Meteor.publish("players", function() {
 Meteor.publish("questions", function() {
 	return Questions.find();
 });
+
+Meteor.methods({
+    getRandomQuestion: function() {
+        var q = Questions.find().fetch();
+        q = _.shuffle(q);
+        return q[0];
+    }
+});
