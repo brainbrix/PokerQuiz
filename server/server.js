@@ -18,3 +18,15 @@ Meteor.startup(function () {
         }
     }
 });
+
+Meteor.publish("logs", function() {
+	return Logs.find({}, { limit: 10, fields: {_id: 0}});
+});
+
+Meteor.publish("players", function() {
+	return Players.find({}, {limit: 10, fields: {_id: 0}});
+});
+
+Meteor.publish("questions", function() {
+	return Questions.find();
+});

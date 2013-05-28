@@ -1,6 +1,6 @@
 writeLog = function (thename, thescore, themessage) {
     var dateTimeString = moment().format("YYYY-MM-DD HH:mm:ss");
-    Logs.insert({zeitpunkt: dateTimeString, name: thename, score: thescore, message: themessage});
+    Logs.insert({timestamp: dateTimeString, name: thename, score: thescore, message: themessage});
 }
 
 Accounts.ui.config({
@@ -12,7 +12,6 @@ Accounts.ui.config({
 
 Deps.autorun(function () {
     if (Meteor.user()) {
-
         var user = Meteor.user();
         if (user.profile) {
             username = user.profile.name;
@@ -31,6 +30,10 @@ Deps.autorun(function () {
     } else {
         userId = null;
     }
+	
+	Meteor.subscribe("players");
+	Meteor.subscribe("logs");
+	Meteor.subscribe("questions");
 });
 
 
@@ -88,7 +91,7 @@ Template.question.questionselected = function () {
 };
 
 Template.question.answers = function () {
-    return Answers.find({}, {});
+    return Answers.find();
 };
 
 Template.answer.events({
@@ -114,7 +117,7 @@ Template.answer.events({
 
 
 Template.ranking.players = function () {
-    return Players.find({}, {limit: 10, sort: {score: -1, name: 1}});
+    return Players.find({}, {sort: {score: -1, name: 1}});
 };
 
 Template.player.selected = function () {
@@ -122,7 +125,7 @@ Template.player.selected = function () {
 };
 
 Template.activities.logs = function () {
-    return Logs.find({}, { limit: 10, sort: {zeitpunkt: -1}});
+    return Logs.find({}, {sort: {timestamp: -1}});
 };
 
 Template.logentry.isError = function() {
