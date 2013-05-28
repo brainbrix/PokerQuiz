@@ -63,23 +63,19 @@ _onQuestionReceive = function(error, question) {
     }
 }
 
-Template.questions.chosenAnswer = function () {
-    return Session.get("selected_answer") == Session.get("correct_answer");
-};
-
-Template.questions.selected_question = function () {
+Template.questions.questionSelected = function () {
     return Session.get("selected_question");
 };
 
-Template.questions.correct_answer = function () {
-    return Session.get("correct_answer");
-};
-
-Template.questions.selected_answer = function () {
+Template.questions.answerSelected = function () {
     return Session.get("selected_answer");
 };
 
-Template.question.questionselected = function () {
+Template.questions.answerChosen = function () {
+    return Session.get("selected_answer") == Session.get("correct_answer");
+};
+
+Template.question.questionSelected = function () {
     return Session.get("selected_question");
 };
 

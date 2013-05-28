@@ -1,9 +1,9 @@
 <template name="questions">
     <div class="well">
         <h4>Questions</h4>
-        {{#if selected_question}}
-            {{#if selected_answer}}
-                {{#if chosenAnswer "correct"}}
+        {{#if questionSelected}}
+            {{#if answerSelected}}
+                {{#if answerChosen}}
                     <div class="text-success"><strong>Good, your answer was correct.</strong></div>
                 {{else}}
                     <div class="text-error"><strong>Sorry, your answer was not correct.</strong></div>
@@ -20,7 +20,7 @@
 
 <template name="question">
     <strong><em>
-        Question {{questionselected.id}}: {{questionselected.question}}<br>
+        Question {{questionSelected.id}}: {{questionSelected.question}}<br>
         {{#each answers}}
             {{> answer}}
         {{/each}}
