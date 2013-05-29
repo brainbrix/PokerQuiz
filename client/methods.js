@@ -2,5 +2,5 @@
 // (implementation is on server)
 Meteor.methods({
     getRandomQuestion: function() {},
-    writeLog: function(a, b, c) {}
+    createPlayerIfNotExist: function(name) {}
 });

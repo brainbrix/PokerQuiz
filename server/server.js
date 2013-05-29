@@ -59,5 +59,23 @@ Meteor.methods({
     writeLog: function(theName, theScore, theMessage) {
         var dateTimeString = moment().format("YYYY-MM-DD HH:mm:ss");
         Logs.insert({timestamp: dateTimeString, name: theName, score: theScore, message: theMessage});
+        console.log("%s %s %s (%d)", dateTimeString, theName, theMessage, theScore);
+    },
+    // add new player if not exist
+    createPlayerIfNotExist: function(username) {
+        var player = Players.findOne({name: username});
+        var playerId;
+        if (!player) {
+            var points = 10;
+            playerId = Players.insert({name: username, score: points});
+            Meteor.call("writeLog", username, points, "has registered");
+        } else {
+            playerId = player._id;
+        }
+        return playerId;
+    },
+    // update the players score
+    updateScore: function(playerId, points) {
+        Players.update(playerId, {$inc: {score: points}});
     }
 });

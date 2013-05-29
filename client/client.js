@@ -13,27 +13,25 @@ Accounts.ui.config({
  * Autorun methods run whenever their dependencies change
  */
 Deps.autorun(function () {
-    // TODO user handling
-	if (Meteor.user()) {
+    // user handling (only called when logging in/out)
+    if (Meteor.user()) {
         var user = Meteor.user();
         if (user.profile) {
             username = user.profile.name;
         } else {
             username = user.username;
         }
-        
-        var dbuser = Players.findOne({name: username});
-        if (!dbuser) {
-            Players.insert({name: username, score: 10});
-            dbuser = Players.findOne({name: username});
-            Meteor.call("writeLog", dbuser.name, dbuser.score, "has registered");
-        }
-        userId = dbuser._id;
-
+        console.log("user logged in: " + username);
+        Meteor.call("createPlayerIfNotExist", username, _onCreatePlayerCallback);
+        _resetQuestion();
     } else {
-        userId = null;
+        Session.set("playerId", null);
     }
 });
+
+_onCreatePlayerCallback = function(error, playerId) {
+    Session.set("playerId", playerId);
+};
 
 // subscriptions to published (change-)events from server
 Deps.autorun(function () {
@@ -46,9 +44,7 @@ Template.questions.events({
 	// get next question (random, from server)
     'click .nextQuestion': function (a) {
 		// first reset the session values
-        Session.set("correct_answer", "x");
-        Session.set("selected_answer", "y");
-        Session.set("selected_question", null);
+		_resetQuestion();
 		// now get the question from the server asynchronous
         Meteor.call("getRandomQuestion", _onQuestionReceive);
         return false;
@@ -75,6 +71,12 @@ _onQuestionReceive = function(error, question) {
     for (var i = 0; i < theAnswers.length; i++) {
         Answers.insert({label: String.fromCharCode(65 + i), text: theAnswers[i] });
     }
+};
+
+_resetQuestion = function() {
+    Session.set("correct_answer", "x");
+    Session.set("selected_answer", "y");
+    Session.set("selected_question", null);
 }
 
 // Template functions for the questions
@@ -104,16 +106,16 @@ Template.answer.events({
         console.log("chosen answer: %o", this);
         var correct = Session.get("correct_answer");
         var points = -5;
-        var message = " was wrong."
+        var message = "was wrong."
 
         if (this.text === correct) {
             points = 10;
-            message = " answered right."
+            message = "answered right."
         }
 
-		// update player in collection (and so in DB)
+		// update score of player
 		console.log("%s; score: %d", message, points);
-        Players.update(userId, {$inc: {score: points}});
+        Meteor.call("updateScore", Session.get("playerId"), points);
 		// write it in the activity log
         Meteor.call("writeLog", username, points, message);
 
@@ -130,7 +132,7 @@ Template.ranking.players = function () {
 };
 
 Template.player.selected = function () {
-    return userId == this._id ? "warning" : "";
+    return Session.equals("playerId", this._id) ? "warning" : "";
 };
 
 /*
