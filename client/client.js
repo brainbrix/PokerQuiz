@@ -1,3 +1,6 @@
+// Collection, not db mapped
+Answers = new Meteor.Collection(null);
+
 Accounts.ui.config({
     requestPermissions: {
         github: ['user', 'repo']

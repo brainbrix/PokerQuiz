@@ -1,3 +1,6 @@
+// Collection, DB mapped
+Questions = new Meteor.Collection("questions");
+
 /**
  *  On server startup, create some players and questions if the database is empty.
  */
