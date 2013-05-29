@@ -1,4 +1,4 @@
-QuizPoker
+PokerQuiz
 =========
 This is a demo application, based on the [Meteor](http://www.meteor.com) JavaScript framework.
 
