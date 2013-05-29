@@ -19,19 +19,20 @@ Meteor.startup(function () {
         var countries = _.shuffle(europe)
         for (var i = 0; i < countries.length; i++) {
             var c = countries[i];
-            console.log("creating question with country %o", c);
+            console.log("creating question with country ", c);
             var q = "What is the capital of " + c.country + "?";
             var a = [];
             a.push(c.capital);
-            for (int n = 1; n < 4; n++) {
+            for (var n = 1; n < 4; n++) {
                 var k = i + n;
-                if (k > countries.length) {
+                if (k >= countries.length) {
                     k = k - countries.length;
                 }
                 a.push(countries[k].capital);
             }
             Questions.insert({id: i, question: q, answers: a});
         }
+        console.log("finished creating questions");
     }
 });
 

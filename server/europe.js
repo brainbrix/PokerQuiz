@@ -48,5 +48,5 @@ europe = [
 	{country: "Turkey", capital: "Ankara"},
 	{country: "Ukraine", capital: "Kiev"},
 	{country: "United Kingdom", capital: "London"},
-	{country: "Vatican City", capital: "Vatican City"},
+	{country: "Vatican City", capital: "Vatican City"}
 ];
